@@ -8,7 +8,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 })
 export class RegistrationPageComponent implements OnInit {
 
-  registrationForm: FormGroup;
+  registrationForm!: FormGroup;
 
   constructor(private readonly formBuilder: FormBuilder) { }
 
@@ -19,8 +19,8 @@ export class RegistrationPageComponent implements OnInit {
   initializeForm(): void {
     this.registrationForm = this.formBuilder.group({
       username: '',
+      password:'',
       email: '',
-      password:''
     })
   }
 
