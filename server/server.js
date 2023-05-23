@@ -15,6 +15,7 @@ const db = mysql.createConnection({
     user: 'root',
     password: process.env.DB_PASS,
     database: 'blog-app',
+    port: 1234
 });
 
 db.connect((err) => {
