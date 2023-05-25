@@ -15,7 +15,7 @@ const db = mysql.createConnection({
     user: 'root',
     password: process.env.DB_PASS,
     database: 'blog-app',
-    port: 1234
+    port: 1234,
 });
 
 db.connect((err) => {
@@ -24,7 +24,20 @@ db.connect((err) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('YOU DID IT!!!!!!!!!');
+    res.json('good');
+});
+
+app.post('/adduser', (req, res) => {
+    const newUser = req.body;
+    const sql = `INSERT INTO blog-app.blogusers (userName, userPassword, userEmail) VAULUES (?, ?, ?)`;
+    db.query(
+        sql,
+        [newUser.user, newUser.userPassword, newUser.userEmail],
+        (err, data) => {
+            if (err) throw err;
+            res.json(data);
+        }
+    );
 });
 
 app.listen(1234);
