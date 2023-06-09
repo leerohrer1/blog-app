@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Observable, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { catchError } from 'rxjs/operators';
 
