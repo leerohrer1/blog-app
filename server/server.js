@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql');
-const config = require('dotenv').config();
+require('dotenv').config();
 
 const app = express();
 
@@ -12,10 +12,10 @@ app.use(bodyParser.json());
 
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
+    user: 'bloguser',
     password: process.env.DB_PASS,
     database: 'blog-app',
-    port: 1234,
+    port: 3306,
 });
 
 db.connect((err) => {
@@ -24,15 +24,15 @@ db.connect((err) => {
 });
 
 app.get('/', (req, res) => {
-    res.json('good');
+    res.json(`YOU'RE A KING!!!!!`);
 });
 
 app.post('/adduser', (req, res) => {
     const newUser = req.body;
-    const sql = `INSERT INTO blog-app.blogusers (userName, userPassword, userEmail) VAULUES (?, ?, ?)`;
+    const sql = `INSERT INTO blogusers (userName, userPassword, userEmailAddress) VALUES (?, ?, ?)`;
     db.query(
         sql,
-        [newUser.user, newUser.userPassword, newUser.userEmail],
+        [newUser.userName, newUser.userPassword, newUser.userEmailAddress],
         (err, data) => {
             if (err) throw err;
             res.json(data);
@@ -40,4 +40,10 @@ app.post('/adduser', (req, res) => {
     );
 });
 
-app.listen(1234);
+app.listen(1234, function (err) {
+    if (err) {
+        return console.error(err);
+    }
+
+    console.log('Started at http://localhost:1234');
+});

@@ -1,6 +1,6 @@
 
 <h1>Register</h1>
-<form [formGroup]="registrationForm" (ngSubmit)="addUser(registrationForm.value)">
+<form [formGroup]="registrationForm" (ngSubmit)="addUser()">
   <h2>Create a username</h2>
   <label>username
     <input type="text" formControlName="username" placeholder="required">
@@ -13,5 +13,5 @@
   <label>email address
     <input type="text" formControlName="email">
   </label>
+  <button type="submit">Register Me</button>
 </form>
-<button (click)="addUser(registrationForm.value)">Register Me</button>
