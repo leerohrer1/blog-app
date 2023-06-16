@@ -3,13 +3,29 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
+const flash = require('express-flash');
+const session = require('express-session');
+const intialilizePassport = require('./passport-config');
 require('dotenv').config();
 
 const app = express();
 
+intialilizePassport(passport, username => {
+    // TODO: check sql db for matching username
+});
+
 app.use(cors());
 app.use(express.static('public'));
 app.use(bodyParser.json());
+app.use(flash());
+app.use(session({
+    // TODO: generate random string for this, longer is better
+    secret: process.env.SESSION_SECRET, 
+    resave: false,
+    saveUnitialized: false
+}));
+app.use(passport.session());
 
 const db = mysql.createConnection({
     host: 'localhost',
@@ -29,21 +45,19 @@ app.get('/', (req, res) => {
 });
 
 app.post('/adduser', async (req, res) => {
-    try {
-        const newUser = req.body;
-        const hashedPassword = await bcrypt.hash(newUser.password, 10);
-        const sql = `INSERT INTO blogusers (userName, userPassword, userEmailAddress) VALUES (?, ?, ?)`;
-        db.query(
-            sql,
-            [newUser.userName, hashedPassword, newUser.userEmailAddress],
-            (err, data) => {
-                if (err) throw err;
-                res.json(data);
-            }
-        );
-    } catch {
+    const newUser = req.body;
+    const hashedPassword = await bcrypt.hash(newUser.userPassword, 10);
+    const sql = `INSERT INTO blogusers (userName, userPassword, userEmailAddress) VALUES (?, ?, ?)`;
+    db.query(
+        sql,
+        [newUser.userName, hashedPassword, newUser.userEmailAddress],
+        (err, data) => {
+            if (err) throw err;
+            res.json(data);
+        }
+    );
 
-    }
+    console.log('Data successfully added to db')
 });
 
 //TODO: create FE ability to edit/delete users
@@ -73,6 +87,12 @@ app.post('/adduser', async (req, res) => {
 app.get('/login', async (req, res) => {
     res.json("let's login dude!");
 });
+
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+}))
 
 app.listen(1234, function (err) {
     if (err) {
